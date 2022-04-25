@@ -30,10 +30,12 @@ public class PessoasController {
 	@PostMapping
 	public ResponseEntity<Object> saveConta(@RequestBody @Valid PessoaDTO pessoaDto) {
 		try {
-			Pessoas pessoa = pessoaService.save(converter(pessoaDto));
+			Pessoas pessoa = converter(pessoaDto);
+			pessoa.setContas(null);
+			Pessoas pessoaAdicionada = pessoaService.save(pessoa);
 
 			return ResponseEntity.status(HttpStatus.CREATED)
-					.body("Pessoa " + pessoa.getIdPessoa() + " adicionada com sucesso!");
+					.body("Pessoa " + pessoaAdicionada.getIdPessoa() + " adicionada com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
