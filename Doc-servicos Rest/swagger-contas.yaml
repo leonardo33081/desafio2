@@ -149,7 +149,34 @@ paths:
         '400':
           description: Erro ao bloquear conta.
           schema:
-            $ref: '#/definitions/Mensagem'                            
+            $ref: '#/definitions/Mensagem'
+  /extrato:          
+    get:
+      tags:
+        - Recupera as operações (extrato) de uma conta a partir de um período inicial.
+      summary: Recupera o extrato da conta por um identificador a partir de um período inicial.
+      description: O endpoint recupera o extrato da conta por um identificador a partir de um período inicial.
+      parameters:
+      - name: idConta
+        in: query
+        description: Identificador da conta.
+        required: true
+        type: integer
+      - name: dataInicial
+        in: query
+        description: Data inicial.
+        required: true
+        type: string        
+        pattern: ^(\d{4})-(1[0-2]|0?[1-9])-(3[01]|[12][0-9]|0?[1-9])$
+      responses:
+        '201':
+          description: Efetua a consulta de operações da conta.
+          schema:
+            $ref: '#/definitions/TransacaoConta'
+        '400':
+          description: Erro ao bloquear conta.
+          schema:
+            $ref: '#/definitions/Mensagem'                                        
 definitions:
   Mensagem:
     type: object

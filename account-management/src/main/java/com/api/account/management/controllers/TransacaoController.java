@@ -89,7 +89,9 @@ public class TransacaoController {
 				return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Saque nao pode ser realizado para a conta "
 						+ transacaoDto.getIdConta() + ". Conta nao existe!");
 			}
-
+			/*
+			* Por falta de tempo, nao foi implementado regras de negócio como por exemplo, não permitir saque se conta inativada.  
+			*/
 			Transacoes transacao = converter(transacaoDto);
 			transacao.setDataTransacao(obterDataAtual());
 			transacao.setTipo(SAQUE);

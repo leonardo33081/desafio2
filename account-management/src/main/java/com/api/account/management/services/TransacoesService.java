@@ -1,5 +1,6 @@
 package com.api.account.management.services;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +40,9 @@ public class TransacoesService {
 		return transacoesRepository.findByConta(conta);
 	}
 
+	public List<Transacoes> findByContaPeriodo(Integer idConta, Date dataInicio){
+		return transacoesRepository.findByContaPeriodo(idConta, dataInicio);
+	}
 	
 	@Transactional
 	public void delete(Transacoes transacao) {

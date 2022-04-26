@@ -1,5 +1,6 @@
 package com.api.account.management.controllers;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.account.management.dtos.ContaDTO;
 import com.api.account.management.dtos.ExtratoDTO;
+import com.api.account.management.dtos.ParametroExtratoPeriodoDTO;
 import com.api.account.management.dtos.Resposta;
 import com.api.account.management.models.Contas;
 import com.api.account.management.models.Pessoas;
@@ -206,6 +208,32 @@ public class ContasController {
 
 	}
 
+	/**
+	 * escopo diferencial: Implementar extrato por período;
+	 * 
+	 * @author Leonardo.Coutinho
+	 * @param ContaDTO
+	 * @return ResponseEntity<Object>
+	 **/
+	@GetMapping("/extrato")
+	public ResponseEntity<Object> extratoContaPorPeriodo(@RequestBody @Valid ParametroExtratoPeriodoDTO param) {
+		try {
+			
+			List<Transacoes> lista = transacoesService.findByContaPeriodo(param.getIdConta(), transformarEmDate(param.getDataInicial()));
+
+			List<ExtratoDTO> listaExtrato = gerarExtrato(lista, param.getIdConta());
+			Map<String, List<ExtratoDTO>> mapaRetorno = new HashMap<String, List<ExtratoDTO>>();
+			mapaRetorno.put("Extrato:", listaExtrato);
+			
+			return ResponseEntity.status(HttpStatus.CREATED).body(mapaRetorno);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro emitir extrato da conta. Motivo:: " + e.getMessage());
+		}
+
+	}
+
+	
+
 	private List<ExtratoDTO> gerarExtrato(List<Transacoes> lista, Integer idConta) {
 		List<ExtratoDTO> retorno = new ArrayList<ExtratoDTO>();
 		for (Transacoes transacao : lista) {
@@ -228,5 +256,12 @@ public class ContasController {
 
 		return simpleDateFormat.format(dataTransacao);
 		
+	}
+	
+	private Date transformarEmDate(String dataInicial) throws ParseException {
+		String pattern = "yyyy-MM-dd";
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+		
+		return simpleDateFormat.parse(dataInicial);
 	}
 }
