@@ -1,0 +1,193 @@
+swagger: '2.0'
+info:
+  title:  Desafio Dock Tech
+  description: API do Desafio Dock Tech.
+  version: 1.0.0
+host: localhost:9080
+basePath: /contas
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /nova:
+    post:
+      tags:
+        - Nova conta
+      summary: Criar uma nova conta.
+      description: |
+        O endpoint cria uma nova conta.
+      parameters:
+        - name: idPessoa
+          in: query
+          description: Identificador da pessoa dona da conta.
+          required: true
+          type: integer
+        - name: saldo
+          in: query
+          description: Saldo da conta.
+          required: true
+          type: number
+        - name: limiteSaqueDiario
+          in: query
+          description: Limite de saque diário.
+          required: true
+          type: number
+        - name: flagAtivo
+          in: query
+          description: Status da conta.
+          required: true
+          type: boolean
+        - name: tipoConta
+          in: query
+          description: Tipo de conta. 1- para conta corrente e 2- para conta poupança.
+          required: true
+          type: integer  
+      responses:
+        '201':
+          description: Conta criada.
+          schema:
+            $ref: '#/definitions/MensagemContaCriada'
+        '400':
+          description: Erro ao salvar conta.
+          schema:
+            $ref: '#/definitions/Mensagem'
+        '204':
+          description: Pessoa não encontrada.
+          schema:
+            $ref: '#/definitions/Mensagem'
+        '500':
+          description: Ocorreu um erro não esperado.
+          schema:
+            $ref: '#/definitions/Mensagem'
+  /saldo:
+    get:
+      tags:
+        - Consulta de saldo.
+      summary: Executa uma consulta ao saldo da conta.
+      description: O endpoint executa uma consulta ao saldo da conta.
+      parameters:
+      - name: idConta
+        in: query
+        description: Identificador da conta.
+        required: true
+        type: integer
+      responses:
+        '201':
+          description: Obtem o saldo
+          schema:
+            $ref: '#/definitions/Saldo'
+        '204':
+          description: Conta não localizada.
+          schema:
+            $ref: '#/definitions/Mensagem'
+        '500':
+          description: Ocorreu um erro não esperado
+          schema:
+            $ref: '#/definitions/Mensagem'
+  /bloqueio/{idConta}:          
+    put:
+      tags:
+        - Bloqueia a conta.
+      summary: Executa um bloqueio da conta.
+      description: O endpoint executa um bloqueio da conta.
+      parameters:
+      - name: idConta
+        in: path
+        description: Identificador da conta.
+        required: true
+        type: integer
+      responses:
+        '201':
+          description: Efetua o bloqueio da conta.
+          schema:
+            $ref: '#/definitions/Mensagem'
+        '400':
+          description: Erro ao bloquear conta.
+          schema:
+            $ref: '#/definitions/Mensagem'
+  /desbloqueio/{idConta}:          
+    put:
+      tags:
+        - Desbloqueia uma conta.
+      summary: Executa um desbloqueio da conta.
+      description: O endpoint executa um desbloqueio da conta.
+      parameters:
+      - name: idConta
+        in: path
+        description: Identificador da conta.
+        required: true
+        type: integer
+      responses:
+        '201':
+          description: Efetua o desbloqueio da conta.
+          schema:
+            $ref: '#/definitions/Mensagem'
+        '400':
+          description: Erro ao bloquear conta.
+          schema:
+            $ref: '#/definitions/Mensagem'
+  /extrato/{idConta}:          
+    get:
+      tags:
+        - Recupera as operações (extrato) de uma conta.
+      summary: Recupera o extrato da conta por um identificador.
+      description: O endpoint recupera o extrato da conta por um identificador.
+      parameters:
+      - name: idConta
+        in: path
+        description: Identificador da conta.
+        required: true
+        type: integer
+      responses:
+        '201':
+          description: Efetua a consulta de operações da conta.
+          schema:
+            $ref: '#/definitions/TransacaoConta'
+        '400':
+          description: Erro ao bloquear conta.
+          schema:
+            $ref: '#/definitions/Mensagem'                            
+definitions:
+  Mensagem:
+    type: object
+    properties:
+      mensagem:
+        type: string
+        description: Mensagem de retorno que pode ser informativa ou de erro
+    required:
+      - mensagem
+  TransacaoConta:
+      type: object
+      properties: 
+        Extrato:
+          type: array
+          items:
+            properties:  
+              idConta:
+                description: Identificador da conta.
+                type: integer
+              idTransacao:
+                description: Identificador da transacao.
+                type: integer
+              dataTransacao:
+                description: Data da transacao.
+                type: string  
+              tipoTransacao:
+                description: Tipo da transacao. SAQUE ou DEPOSITO
+                type: string                
+              valorTransacao:
+                description: Valor da transacao.
+                type: number
+  MensagemContaCriada:
+      type: object
+      properties:      
+        mensagem:
+          description: mensagem contendo identificador da conta criada.
+  Saldo:
+      type: number
+      properties:      
+        mensagem:
+          description: Saldo da conta.

@@ -1,0 +1,98 @@
+swagger: '2.0'
+info:
+  title:  Desafio Dock Tech
+  description: API do Desafio Dock Tech.
+  version: 1.0.0
+host: localhost:9080
+basePath: /transacao
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /deposito:
+    put:
+      tags:
+        - Deposito
+      summary: Permite fazer um depósito.
+      description: |
+        O endpoint permite fazer um depósito.
+      parameters:
+        - name: idConta
+          in: query
+          description: Identificador da conta.
+          required: true
+          type: integer
+        - name: valor
+          in: query
+          description: Valor a ser depositado na conta.
+          required: true
+          type: number
+      responses:
+        '201':
+          description: Deposito efetuado.
+          schema:
+            $ref: '#/definitions/MensagemTransacaoCriada'
+        '400':
+          description: Erro ao salvar deposito.
+          schema:
+            $ref: '#/definitions/Mensagem'
+        '204':
+          description: Conta não encontrada.
+          schema:
+            $ref: '#/definitions/Mensagem'
+        '500':
+          description: Ocorreu um erro não esperado.
+          schema:
+            $ref: '#/definitions/Mensagem'
+  /saque:
+    put:
+      tags:
+        - Saque
+      summary: Permite fazer um saque.
+      description: |
+        O endpoint permite fazer um saque.
+      parameters:
+        - name: idConta
+          in: query
+          description: Identificador da conta.
+          required: true
+          type: integer
+        - name: valor
+          in: query
+          description: Valor a ser sacado da conta.
+          required: true
+          type: number
+      responses:
+        '201':
+          description: Saque efetuado.
+          schema:
+            $ref: '#/definitions/MensagemTransacaoCriada'
+        '400':
+          description: Erro ao salvar deposito.
+          schema:
+            $ref: '#/definitions/Mensagem'
+        '204':
+          description: Conta não encontrada.
+          schema:
+            $ref: '#/definitions/Mensagem'
+        '500':
+          description: Ocorreu um erro não esperado.
+          schema:
+            $ref: '#/definitions/Mensagem'
+definitions:
+  Mensagem:
+    type: object
+    properties:
+      mensagem:
+        type: string
+        description: Mensagem de retorno que pode ser informativa ou de erro
+    required:
+      - mensagem
+  MensagemTransacaoCriada:
+      type: object
+      properties:      
+        mensagem:
+          description: mensagem contendo identificador da conta criada.

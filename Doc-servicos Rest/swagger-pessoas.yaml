@@ -1,0 +1,66 @@
+swagger: '2.0'
+info:
+  title:  Desafio Dock Tech
+  description: API do Desafio Dock Tech.
+  version: 1.0.0
+host: localhost:9080
+basePath: /pessoas
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /nova:
+    post:
+      tags:
+        - Pessoa
+      summary: Permite cadastrar pessoas.
+      description: |
+        O endpoint permite cadastrar pessoas.
+      parameters:
+        - name: nome
+          in: query
+          description: Nome da pessoa.
+          required: true
+          type: string
+        - name: cpf
+          in: query
+          description: CPF da pessoa.
+          required: true
+          type: string
+        - name: dataNascimento
+          in: query
+          description: Data de nascimento da pessoa.
+          required: true
+          type: string
+          pattern: ^(\d{4})-(1[0-2]|0?[1-9])-(3[01]|[12][0-9]|0?[1-9])$
+      responses:
+        '201':
+          description: Pessoa cadastrada.
+          schema:
+            $ref: '#/definitions/MensagemPessoaCriada'
+        '400':
+          description: Erro ao cadastrar pessoa.
+          schema:
+            $ref: '#/definitions/Mensagem'
+        '500':
+          description: Ocorreu um erro não esperado.
+          schema:
+            $ref: '#/definitions/Mensagem'
+
+definitions:
+  Mensagem:
+    type: object
+    properties:
+      mensagem:
+        type: string
+        description: Mensagem de retorno que pode ser informativa ou de erro
+    required:
+      - mensagem
+  MensagemPessoaCriada:
+      type: object
+      properties:      
+        mensagem:
+          description: mensagem contendo identificador da conta criada.

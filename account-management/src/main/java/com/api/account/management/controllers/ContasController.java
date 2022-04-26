@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.account.management.dtos.ContaDTO;
 import com.api.account.management.dtos.ExtratoDTO;
+import com.api.account.management.dtos.Resposta;
 import com.api.account.management.models.Contas;
 import com.api.account.management.models.Pessoas;
 import com.api.account.management.models.Transacoes;
@@ -59,7 +60,7 @@ public class ContasController {
 			Optional<Pessoas> pessoaConta = obterPessoaConta(contaDto.getIdPessoa());
 
 			if (!pessoaConta.isPresent()) {
-				return ResponseEntity.status(HttpStatus.CREATED).body("Não foi possível incluir a conta. "
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Não foi possível incluir a conta. "
 						+ "Pessoa não encontrada para o identificador " + contaDto.getIdPessoa());
 			}
 
@@ -68,9 +69,9 @@ public class ContasController {
 			conta.setPessoa(pessoaConta.get());
 
 			Contas contaSalva = contasService.save(conta);
+			 
 
-			return ResponseEntity.status(HttpStatus.CREATED)
-					.body("Conta " + contaSalva.getIdConta() + " criada com sucesso!");
+			return ResponseEntity.status(HttpStatus.CREATED).body(new Resposta("Conta " + contaSalva.getIdConta() + " criada com sucesso!"));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 					.body("Erro ao salvar conta. Motivo:: " + e.getMessage());
@@ -91,7 +92,7 @@ public class ContasController {
 			Optional<Contas> conta = contasService.findById(idConta);
 			
 			if (!conta.isPresent()) {
-				return ResponseEntity.status(HttpStatus.CREATED).body("Não foi possível obter o saldo da conta para identificador " + idConta );
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Não foi possível obter o saldo da conta para identificador " + idConta );
 			}
 			
 			return ResponseEntity.status(HttpStatus.CREATED) .body(conta.get().getSaldo());
@@ -193,10 +194,9 @@ public class ContasController {
 			
 			List<Transacoes> lista = transacoesService.findByConta(conta);
 
-			List<ExtratoDTO> listaExtrato = gerarExtrato(lista);
+			List<ExtratoDTO> listaExtrato = gerarExtrato(lista, idConta);
 			Map<String, List<ExtratoDTO>> mapaRetorno = new HashMap<String, List<ExtratoDTO>>();
-			
-			mapaRetorno.put("Conta:" + idConta, listaExtrato);
+			mapaRetorno.put("Extrato:", listaExtrato);
 			
 			return ResponseEntity.status(HttpStatus.CREATED).body(mapaRetorno);
 		} catch (Exception e) {
@@ -206,13 +206,13 @@ public class ContasController {
 
 	}
 
-	private List<ExtratoDTO> gerarExtrato(List<Transacoes> lista) {
+	private List<ExtratoDTO> gerarExtrato(List<Transacoes> lista, Integer idConta) {
 		List<ExtratoDTO> retorno = new ArrayList<ExtratoDTO>();
 		for (Transacoes transacao : lista) {
 			ExtratoDTO extrato = new ExtratoDTO();
 			
 			extrato.setDataTransacao(formatarData(transacao.getDataTransacao()));
-			extrato.setIdConta(transacao.getConta().getIdConta());
+			extrato.setIdConta(idConta);
 			extrato.setIdTransacao(transacao.getIdTransacao());
 			extrato.setValorTransacao(transacao.getValor());
 			extrato.setTipoTransacao(transacao.getTipo());

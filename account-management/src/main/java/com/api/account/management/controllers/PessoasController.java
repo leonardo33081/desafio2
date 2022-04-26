@@ -24,11 +24,11 @@ public class PessoasController {
 
 	/**
 	 * @author Leonardo.Coutinho
-	 * @param ContaDTO
+	 * @param PessoaDTO
 	 * @return ResponseEntity<Object>
 	 **/
-	@PostMapping
-	public ResponseEntity<Object> saveConta(@RequestBody @Valid PessoaDTO pessoaDto) {
+	@PostMapping("/nova")
+	public ResponseEntity<Object> savePessoa(@RequestBody @Valid PessoaDTO pessoaDto) {
 		try {
 			Pessoas pessoa = converter(pessoaDto);
 			pessoa.setContas(null);

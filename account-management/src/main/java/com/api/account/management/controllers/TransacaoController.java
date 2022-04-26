@@ -44,7 +44,7 @@ public class TransacaoController {
 		try {
 			Optional<Contas> conta = contaService.findById(transacaoDto.getIdConta());
 			if (!conta.isPresent()) {
-				return ResponseEntity.status(HttpStatus.CREATED).body("Deposito nao pode ser realizado para a conta "
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Deposito nao pode ser realizado para a conta "
 						+ transacaoDto.getIdConta() + ". Conta nao existe!");
 			}
 
@@ -86,7 +86,7 @@ public class TransacaoController {
 			
 			Optional<Contas> conta = contaService.findById(transacaoDto.getIdConta());
 			if (!conta.isPresent()) {
-				return ResponseEntity.status(HttpStatus.CREATED).body("Saque nao pode ser realizado para a conta "
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Saque nao pode ser realizado para a conta "
 						+ transacaoDto.getIdConta() + ". Conta nao existe!");
 			}
 
@@ -99,7 +99,7 @@ public class TransacaoController {
 			Double novoSaldo = obterSaldoFormatado( contaEmAtualizacao.getSaldo() - transacaoCriada.getValor()); 
 			
 			if(!validarPossibilidadeDeSaque(novoSaldo)) {
-				return ResponseEntity.status(HttpStatus.CREATED).body(
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body(
 						"Saque nao pode ser realizado para a conta " + transacaoDto.getIdConta() + ". Saldo insuficiente!");
 			
 			}
